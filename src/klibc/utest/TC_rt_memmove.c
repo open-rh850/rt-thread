@@ -6,6 +6,7 @@
  * Change Logs:
  * Date           Author       Notes
  * 2024-12-25     Meco Man     first version
+ * 2026-11-06     Parthiban    keep TC_rt_memmove_too_long inside its buffers
  */
 
 #include <rtthread.h>
@@ -69,12 +70,12 @@ static void TC_rt_memmove_null_dest(void)
     rt_memmove(RT_NULL, src, 0); /* Should not crash and do nothing */
 }
 
-/* Move more than source size */
+/* Move more than the string length */
 static void TC_rt_memmove_too_long(void)
 {
-    char src[] = "Short";
-    char dest[10] = { 0 };
-    rt_memmove(dest, src, sizeof(src) + 5); /* Should only copy up to src length */
+    char src[11] = "Short";
+    char dest[11] = { 0 };
+    rt_memmove(dest, src, sizeof(src)); /* 11 bytes, the zero padding follows the string */
     uassert_str_equal(dest, "Short");
     uassert_int_equal(dest[5], 0); /* Ensure no buffer overflow */
 }
